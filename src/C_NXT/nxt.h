@@ -99,5 +99,6 @@ void NXT_reset_motor_position(NXT*,
 			      int relative,
 			      int ans,
 			      unsigned char *status);
+void NXT_stay_alive(NXT*);
 
 #endif /* NXT_H */
