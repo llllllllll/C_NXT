@@ -1,6 +1,6 @@
 // Joe Jevnik
 // 2.11.2013
-// implementation of the bluecomm.
+// implementation of the nxt.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -164,7 +164,7 @@ void NXT_set_motorstate(NXT *nxt,motorstate_t st,int ans,
 }
 
 // returns the motorstate_t of the nxt on the given port.
-motorstate_t *NXT_get_output_state(NXT *nxt,unsigned char port){
+motorstate_t *NXT_get_motorstate(NXT *nxt,unsigned char port){
     msg_t msg = alloc_msg_t(0x0,0x6);
     char buf[25];
     motorstate_t *st = malloc(sizeof(motorstate_t));
