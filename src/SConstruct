@@ -1,0 +1,25 @@
+from glob import glob
+
+auto_libs = ''
+
+# Detect the system's endianness
+from sys import byteorder
+if byteorder == 'big':
+	endian = '_NXT_BIG_ENDIAN'
+else:
+	endian = '_NXT_LITTLE_ENDIAN'
+
+BuildEnv = Environment(CCFLAGS=['-g','-ggdb'
+                                ,'-D' + endian])
+
+if auto_libs:
+	BuildEnv.ParseConfig('pkg-config --cflags --libs ' + auto_libs)
+
+Default(BuildEnv.Library('C_NXT',
+			 [x for x in glob('C_NXT/*.c')
+			  if not x.startswith('main')],
+			 LIBS=['bluetooth']))
+
+
+Default(BuildEnv.Program('test','main.c',
+			 LIBS=['bluetooth','C_NXT'],LIBPATH='.'))
