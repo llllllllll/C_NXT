@@ -76,15 +76,16 @@ NXT *alloc_NXT();
 void free_NXT();
 int NXT_connect(NXT*,const char*);
 void NXT_disconnect(NXT*);
-int NXT_send_buffer(NXT*,msg_t,unsigned short int);
-int NXT_recv_buffer(NXT*,msg_t,unsigned short int);
+int NXT_send_buffer(NXT*,char*,unsigned short int);
+int NXT_send_msg(NXT*,msg_t*);
+int NXT_recv_buffer(NXT*,char*,unsigned short int);
 void NXT_play_tone(NXT*,
 		   unsigned short int freq,
 		   unsigned short int time,
 		   int ans,
 		   unsigned char *status);
 unsigned short int NXT_battery_level(NXT*);
-void NXT_set_motorstate(NXT*,motorstate_t,int ans,unsigned char *status);
+void NXT_set_motorstate(NXT*,motorstate_t*,int ans,unsigned char *status);
 motorstate_t *NXT_get_motorstate(NXT*,unsigned char port);
 void NXT_set_input_mode(NXT*,
 			unsigned char port,
