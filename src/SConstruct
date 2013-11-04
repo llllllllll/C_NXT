@@ -16,10 +16,6 @@ if auto_libs:
 	BuildEnv.ParseConfig('pkg-config --cflags --libs ' + auto_libs)
 
 Default(BuildEnv.Library('C_NXT',
-			 [x for x in glob('C_NXT/*.c')
+			 [x for x in glob('*.c')
 			  if not x.startswith('main')],
 			 LIBS=['bluetooth']))
-
-
-Default(BuildEnv.Program('test','main.c',
-			 LIBS=['bluetooth','C_NXT'],LIBPATH='.'))

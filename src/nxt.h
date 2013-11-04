@@ -8,9 +8,9 @@
 
 // A representation of an NXT.
 typedef struct{
-    int dev_id;
-    int local_sock;
-    int remote_sock;
+    int dev_id;      // Device ID.
+    int local_sock;  // Local socket.
+    int remote_sock; // Remote socket
 } NXT;
 
 // The ports for a motor.
@@ -85,13 +85,13 @@ typedef enum{
 
 // The state of a motor.
 typedef struct{
-    motor_port     port;
+    motor_port     port;               // Range [MOTOR_A,MOTOR_ALL]
     char           power;              // Range [-100,100]
-    motor_mode     mode;
-    motor_reg_mode reg_mode;
-    char           turn_ratio;
-    motor_reg_mode run_state;
-    unsigned int   tacho_limit;
+    motor_mode     mode;               // The mode that the motor is using.
+    motor_reg_mode reg_mode;           // The regulation mode that it is using.
+    char           turn_ratio;         // Range [-100,100]
+    motor_runstate run_state;          // The runstate that it is using.
+    unsigned int   tacho_limit;        // The tacho limit for the motor.
     int            tacho_count;        // 0 = run forevor.
     int            block_tacho_count;
     int            rotation_count;
@@ -99,15 +99,15 @@ typedef struct{
 
 // The state of a sensor.
 typedef struct{
-    sensor_port        port;
-    int                valid;
-    int                calibrated;
-    sensor_type        type;
-    sensor_mode        mode;
-    unsigned short int raw_value;
-    unsigned short int normalized_value;
-    short int          scaled_value;
-    short int          calibrated_value;
+    sensor_port        port;             // Range [SENSOR_1,SENSOR_4]
+    int                valid;            // Range [0,1]
+    int                calibrated;       // Range [0,1]
+    sensor_type        type;             // The type of sensor.
+    sensor_mode        mode;             // The mode the sensor is using.
+    unsigned short int raw_value;        // The raw data off the sensor.
+    unsigned short int normalized_value; // The normalized value of the sensor.
+    short int          scaled_value;     // The scaled value off the sensor.
+    short int          calibrated_value; // The calibrated value off the sensor.
 } sensorstate_t;
 
 // Allocates and initializes an NXT.
@@ -158,18 +158,18 @@ unsigned short int NXT_battery_level(NXT*);
 // constructiong a proper state to send.
 // If ans, status will be set to the response of the NXT
 // Otherwise, status can be NULL.
-void NXT_set_motorstate(NXT*,motorstate_t*,int ans,unsigned char *status);
+void NXT_set_motorstate(NXT*,motorstate_t*,int,unsigned char*);
 
 // Returns the motorstate of a given port (MOTOR_A,MOTOR_B,MOTOR_C,or
 // MOTOR_ALL).
 // Mallocs the motorstate_t, be sure to free it elsewhere.
-motorstate_t *NXT_get_motorstate(NXT*,motor_port port);
+motorstate_t *NXT_get_motorstate(NXT*,motor_port);
 
 // Sets the input mode of a given port to the type and mode specified.
 // If ans, status will be set to the response of the NXT
 // Otherwise, status can be NULL.
-void NXT_set_input_mode(NXT*,sensor_port,sensor_type type,sensor_mode mode,
-			int ans,unsigned char *status);
+void NXT_set_input_mode(NXT*,sensor_port,sensor_type,sensor_mode,int,
+			unsigned char*);
 
 // Returns a pointer to the sensorstate_t of a given sensor port (SENSOR_1,
 // SENSOR_2,SENSOR_3,SENSOR_4).
@@ -183,7 +183,7 @@ sensorstate_t *NXT_get_sensorstate(NXT*,sensor_port);
 // If ans, status will be set to the response of the NXT
 // Otherwise, status can be NULL.
 void NXT_reset_motor_position(NXT*,motor_port,int relative,int ans,
-			      unsigned char *status);
+			      unsigned char*);
 
 // Sends a STAY_ALIVE message to the NXT. Normal commands do not tell the NXT
 // Not to turn off, and thus you should be sure to send one of these every so

@@ -7,10 +7,11 @@
 
 #include <stdlib.h>
 
+// The type that represents a message to be passed to the NXT over bluetooth.
 typedef struct {
-  unsigned char* txt;
-  size_t len;
-  size_t cap;
+  unsigned char* txt; // The data to send.
+  size_t len;         // The length of a message.
+  size_t cap;         // The capacity of the message (will increase if needed).
 } msg_t;
 
 // Allocates a message starting with the type and opcodes.
