@@ -12,7 +12,7 @@ typedef unsigned char u_char;
 // allocates and initializes a new msg_t.
 msg_t *alloc_msg(char type, char opcode){
     msg_t *tmp = malloc(sizeof(msg_t));
-    tmp->txt = malloc(256 * sizeof(u_char));
+    tmp->txt = malloc(64 * sizeof(u_char));
     tmp->txt[0] = type;
     tmp->txt[1] = opcode;
     tmp->len = 2;
@@ -28,7 +28,7 @@ void free_msg(msg_t *msg){
 // equivelent to { free(msg); msg = alloc(type,opcode); }.
 void msg_reset(msg_t *msg,char type, char opcode){
     free(msg->txt);
-    msg->txt = malloc(256 * sizeof(u_char));
+    msg->txt = malloc(64 * sizeof(u_char));
     msg->txt[0] = type;
     msg->txt[1] = opcode;
     msg->len = 2;

@@ -23,6 +23,7 @@ NXT *alloc_NXT(){
     tmp->dev_id = hci_get_route(NULL);
     tmp->local_sock = hci_open_dev(tmp->dev_id);
     if (tmp->dev_id < 0 || tmp->local_sock < 0){
+	free(tmp);
 	return NULL;
     }
     tmp->remote_sock = socket(AF_BLUETOOTH,SOCK_STREAM,BTPROTO_RFCOMM);
@@ -79,6 +80,9 @@ int NXT_send_buffer(NXT *nxt,char *b,unsigned short int len){
     return 0;
 }
 
+// Sends a msg_t to the NXT.
+// On success returns 0.
+// On failure returns -1.
 int NXT_send_msg(NXT *nxt,msg_t *msg){
     char *b = malloc(msg->len * sizeof(char)),l2[2];
     int status;
@@ -187,7 +191,7 @@ void NXT_set_motorstate(NXT *nxt,motorstate_t *st,int ans,
 }
 
 // returns the motorstate_t of the nxt on the given port.
-motorstate_t *NXT_get_motorstate(NXT *nxt,unsigned char port){
+motorstate_t *NXT_get_motorstate(NXT *nxt,motor_port port){
     msg_t *msg = alloc_msg(0x0,0x6);
     char buf[25];
     motorstate_t *st = malloc(sizeof(motorstate_t));
@@ -196,9 +200,11 @@ motorstate_t *NXT_get_motorstate(NXT *nxt,unsigned char port){
     NXT_recv_buffer(nxt,buf,25);
     free_msg(msg);
     if(buf[0]!= 0x02 || buf[1] != 0x06){
+	free(st);
         return NULL;
     }
     if(buf[2] != 0){
+	free(st);
         return NULL;
     }
     st->port = buf[3];
@@ -215,7 +221,7 @@ motorstate_t *NXT_get_motorstate(NXT *nxt,unsigned char port){
 }
 
 // sets the input mode of the nxt.
-void NXT_set_input_mode(NXT *nxt,unsigned char port,sensor_type type,
+void NXT_set_input_mode(NXT *nxt,sensor_port port,sensor_type type,
 			sensor_mode mode,int ans,unsigned char *status){
     msg_t *msg;
     if(ans){
@@ -241,7 +247,7 @@ void NXT_set_input_mode(NXT *nxt,unsigned char port,sensor_type type,
 }
 
 // returns the sensorstate_t of a given port.
-sensorstate_t *NXT_get_sensorstate(NXT *nxt,unsigned char port){
+sensorstate_t *NXT_get_sensorstate(NXT *nxt,sensor_port port){
     msg_t *msg = alloc_msg(0x0,0x7);
     char buf[16];
     sensorstate_t *st = malloc(sizeof(sensorstate_t));
@@ -268,7 +274,7 @@ sensorstate_t *NXT_get_sensorstate(NXT *nxt,unsigned char port){
 }
 
 // resets the motor position of a port.
-void NXT_reset_motor_position(NXT *nxt,unsigned char port,
+void NXT_reset_motor_position(NXT *nxt,motor_port port,
 			      int relative,int ans,unsigned char *status){
     msg_t *msg;
     if(ans){
