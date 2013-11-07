@@ -255,17 +255,14 @@ sensorstate_t *NXT_get_sensorstate(NXT *nxt,sensor_port port){
     NXT_send_msg(nxt,msg);
     NXT_recv_buffer(nxt,buf,16);
     free(msg);
-    if(buf[0] != 0x02 || buf[1] != 0x07){
-        return NULL;
-    }
-    if(buf[2] != 0){
+    if(buf[0] != 0x02 || buf[1] != 0x07 || buf[2] != 0){
         return NULL;
     }
     st->port = buf[3];
     st->valid = (buf[4] > 0) ? 1 : 0;
     st->calibrated = (buf[5] > 0) ? 1 : 0;
-    st->type = (sensor_type) ((int) buf[6]);
-    st->mode = (sensor_mode) ((int) buf[7]);
+    st->type = (sensor_type) buf[6];
+    st->mode = (sensor_mode) buf[7];
     st->raw_value = msg_bytes2U16(&(buf[8]));
     st->normalized_value = msg_bytes2U16(&(buf[10]));
     st->scaled_value = msg_bytes2S16(&(buf[12]));
