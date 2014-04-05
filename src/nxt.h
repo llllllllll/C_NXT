@@ -1,16 +1,43 @@
-// Joe Jevnik
-// 2.11.2013
-// NXT header.
+/* nxt.h --- Interface to the C_NXT library.
+   Copyright (c) 2014 Joe Jevnik
+
+   This program is free software; you can redistribute it and/or modify it
+   under the terms of the GNU General Public License as published by the Free
+   Software Foundation; either version 2 of the License, or (at your option)
+   any later version.
+
+   This program is distributed in the hope that it will be useful, but WITHOUT
+   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+   FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+   more details.
+
+   You should have received a copy of the GNU General Public License along with
+   this program; if not, write to the Free Software Foundation, Inc., 51
+   Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA. */
+
 #ifndef NXT_H
 #define NXT_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <unistd.h>
+#include <errno.h>
+#include <sys/socket.h>
+#include <bluetooth/bluetooth.h>
+#include <bluetooth/hci.h>
+#include <bluetooth/hci_lib.h>
+#include <bluetooth/rfcomm.h>
 
 #include "msg.h"
 
 // A representation of an NXT.
 typedef struct{
     int dev_id;      // Device ID.
-    int local_sock;  // Local socket.
-    int remote_sock; // Remote socket
+    int local_sock;  // Local socket file descriptor.
+    int remote_sock; // Remote socket file descriptor.
 } NXT;
 
 // The ports for a motor.
@@ -95,86 +122,93 @@ typedef struct{
     int            tacho_count;        // 0 = run forevor.
     int            block_tacho_count;
     int            rotation_count;
-} motorstate_t;
+} motorstate;
 
 // The state of a sensor.
 typedef struct{
-    sensor_port        port;             // Range [SENSOR_1,SENSOR_4]
-    int                valid;            // Range [0,1]
-    int                calibrated;       // Range [0,1]
-    sensor_type        type;             // The type of sensor.
-    sensor_mode        mode;             // The mode the sensor is using.
-    unsigned short int raw_value;        // The raw data off the sensor.
-    unsigned short int normalized_value; // The normalized value of the sensor.
-    short int          scaled_value;     // The scaled value off the sensor.
-    short int          calibrated_value; // The calibrated value off the sensor.
-} sensorstate_t;
+    sensor_port    port;             // Range [SENSOR_1,SENSOR_4]
+    int            valid;            // Range [0,1]
+    int            calibrated;       // Range [0,1]
+    sensor_type    type;             // The type of sensor.
+    sensor_mode    mode;             // The mode the sensor is using.
+    unsigned short raw_value;        // The raw data off the sensor.
+    unsigned short normalized_value; // The normalized value of the sensor.
+    short int      scaled_value;     // The scaled value off the sensor.
+    short int      calibrated_value; // The calibrated value off the sensor.
+} sensorstate;
 
-// Allocates and initializes an NXT.
-// On success returns a pointer to the NXT.
-// On failure returns NULL.
-NXT *alloc_NXT();
+// Initializes a previously allocate NXT structure.
+// return: 0 on success, non-zero on failure.
+int NXT_init(NXT*);
 
-// Closes the connections and then frees the NXT.
-void free_NXT(NXT*);
+// Safely releases all resources held by this NXT structure.
+// return: 0 on success, non-zero on failure.
+int NXT_destroy(NXT*);
 
-// Connects to the given MAC address.
-// On success returns 0.
-// On failure returns -1.
+// Connects an NXT to a given mac address.
+// return: 0 on success, non-zero on failure.
 int NXT_connect(NXT*,const char*);
 
 // Closes the connection of the given NXT.
-void NXT_disconnect(NXT*);
+// return: 0 on success, non-zero on failure.
+int NXT_disconnect(NXT*);
 
 // Sends a raw buffer to the NXT of a given length.
-// On success returns 0.
-// On failure returns -1.
-int NXT_send_buffer(NXT*,char*,unsigned short int);
+// return: 0 on success, non-zero on failure.
+int NXT_send_buffer(NXT*,char*,unsigned short);
 
-// Sends a msg_t to the NXT.
-// On success returns 0.
-// On failure returns -1.
-int NXT_send_msg(NXT*,msg_t*);
+// Sends a nxt_msg to the NXT.
+// return: 0 on success, non-zero on failure.
+int NXT_send_msg(NXT*,nxt_msg*);
 
 // Receives a buffer from the NXT of a given length.
-// On success returns 0.
-// If the buffer is too small, returns -1.
-// If the read fails, returns -2.
-int NXT_recv_buffer(NXT*,char*,unsigned short int);
+// return: 0 on success, non-zero on failure.
+int NXT_recv_buffer(NXT*,char*,unsigned short);
 
 // Plays a tone of a given frequency for a certain amount of time on the NXT.
 // If ans, status will be set to the response of the NXT
 // Otherwise, status can be NULL.
-void NXT_play_tone(NXT*,
-		   unsigned short int freq,
-		   unsigned short int time,
-		   int ans,
-		   unsigned char *status);
+// return: 0 on success, non-zero on failure.
+int NXT_play_tone(NXT*,
+                  unsigned short freq,
+                  unsigned short time,
+                  bool           ans,
+                  unsigned char *status);
 
 // Returns the battery level in mV of the NXT.
-unsigned short int NXT_battery_level(NXT*);
+unsigned short NXT_battery_level(NXT*);
 
-// Sets a motorstate on the NXT. See motorstate_t for information on
+// Sets a motorstate on the NXT. See motorstate for information on
 // constructiong a proper state to send.
 // If ans, status will be set to the response of the NXT
 // Otherwise, status can be NULL.
-void NXT_set_motorstate(NXT*,motorstate_t*,int,unsigned char*);
+// return: 0 on success, non-zero on failure.
+int NXT_set_motorstate(NXT*,
+                       motorstate*,
+                       bool,
+                       unsigned char*);
 
-// Returns the motorstate of a given port (MOTOR_A,MOTOR_B,MOTOR_C,or
-// MOTOR_ALL).
-// Mallocs the motorstate_t, be sure to free it elsewhere.
-motorstate_t *NXT_get_motorstate(NXT*,motor_port);
+// Gets the motorstate of a given port (MOTOR_A,MOTOR_B,MOTOR_C).
+// return: 0 on success, non-zero on failure.
+int NXT_get_motorstate(NXT*,
+                       motor_port,
+                       motorstate*);
 
 // Sets the input mode of a given port to the type and mode specified.
 // If ans, status will be set to the response of the NXT
 // Otherwise, status can be NULL.
-void NXT_set_input_mode(NXT*,sensor_port,sensor_type,sensor_mode,int,
-			unsigned char*);
+// return: 0 on success, non-zero on failure.
+int NXT_set_input_mode(NXT*,
+                       sensor_port,
+                       sensor_type,
+                       sensor_mode,
+                       bool,
+                       unsigned char*);
 
 // Returns a pointer to the sensorstate_t of a given sensor port (SENSOR_1,
 // SENSOR_2,SENSOR_3,SENSOR_4).
-// Mallocs the sensorstate_t, be sure to free it elsewhere.
-sensorstate_t *NXT_get_sensorstate(NXT*,sensor_port);
+// return: 0 on success, non-zero on failure.
+int NXT_get_sensorstate(NXT*,sensor_port,sensorstate*);
 
 // Resets the position of the motor on port (MOTOR_A,MOTOR_B,MOTOR_C,or
 // MOTOR_ALL).
@@ -182,12 +216,17 @@ sensorstate_t *NXT_get_sensorstate(NXT*,sensor_port);
 // absolute position.
 // If ans, status will be set to the response of the NXT
 // Otherwise, status can be NULL.
-void NXT_reset_motor_position(NXT*,motor_port,int relative,int ans,
-			      unsigned char*);
+// return: 0 on success, non-zero on failure.
+int NXT_reset_motor_position(NXT*,
+                             motor_port,
+                             bool relative,
+                             bool ans,
+                             unsigned char*);
 
 // Sends a STAY_ALIVE message to the NXT. Normal commands do not tell the NXT
 // Not to turn off, and thus you should be sure to send one of these every so
 // often.
-void NXT_stay_alive(NXT*);
+// return: 0 on success, non-zero on failure.
+int NXT_stay_alive(NXT*);
 
-#endif /* NXT_H */
+#endif

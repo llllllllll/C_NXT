@@ -9,7 +9,7 @@ if byteorder == 'big':
 else:
 	endian = '_NXT_LITTLE_ENDIAN'
 
-BuildEnv = Environment(CCFLAGS=['-g','-ggdb','-std=gnu99'
+BuildEnv = Environment(CCFLAGS=['-g','-ggdb'
                                 ,'-D' + endian])
 
 if auto_libs:

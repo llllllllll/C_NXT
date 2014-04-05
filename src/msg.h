@@ -1,58 +1,76 @@
-// Joe Jevnik
-// 2.11.2013
-// message_t header.
+/* msg.h --- Interface to the message type section of the C_NXT library.
+   Copyright (c) 2014 Joe Jevnik
+
+   This program is free software; you can redistribute it and/or modify it
+   under the terms of the GNU General Public License as published by the Free
+   Software Foundation; either version 2 of the License, or (at your option)
+   any later version.
+
+   This program is distributed in the hope that it will be useful, but WITHOUT
+   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+   FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+   more details.
+
+   You should have received a copy of the GNU General Public License along with
+   this program; if not, write to the Free Software Foundation, Inc., 51
+   Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA. */
 
 #ifndef MSG_H
 #define MSG_H
 
 #include <stdlib.h>
+#include <string.h>
+
+// Shorthand notation.
+typedef unsigned char u_char;
 
 // The type that represents a message to be passed to the NXT over bluetooth.
+// vector type.
 typedef struct {
   unsigned char* txt; // The data to send.
-  size_t len;         // The length of a message.
-  size_t cap;         // The capacity of the message (will increase if needed).
-} msg_t;
+  size_t         len; // The length of a message.
+  size_t         cap; // The capacity of the message (will increase if needed).
+} nxt_msg;
 
 // Allocates a message starting with the type and opcodes.
 // Returns a pointer to the malloc'd message.
-// Mallocs a msg_t, be sure to free_msg() it elsewhere.
-msg_t *alloc_msg(char,char);
+// Mallocs a nxt_msg, be sure to free_msg() it elsewhere.
+nxt_msg *alloc_msg(char,char);
 
-// Safely frees a msg_t by freeing it's txt and then the rest.
-void free_msg(msg_t*);
+// Safely frees a nxt_msg by freeing it's txt and then the rest.
+void free_msg(nxt_msg*);
 
 // msg_reset() == { free_msg(); alloc_msg(); }
-void msg_reset(msg_t*,char,char);
+void msg_reset(nxt_msg*,char,char);
 
 // Adds a signed 8 bit value to the msg.
-void msg_addS8(msg_t*,signed char);
+void msg_addS8(nxt_msg*,char);
 
 // Adds an unsigned 8 bit value to the msg.
-void msg_addU8(msg_t*,unsigned char);
+void msg_addU8(nxt_msg*,unsigned char);
 
 // Adds a signed 16 bit value to the msg.
-void msg_addS16(msg_t*,signed short int);
+void msg_addS16(nxt_msg*,signed short int);
 
 // Adds an unsigned 16 bit value to the msg.
-void msg_addU16(msg_t*,unsigned short int);
+void msg_addU16(nxt_msg*,unsigned short int);
 
 // Adds a signed 32 bit value to the msg.
-void msg_addS32(msg_t*,signed int);
+void msg_addS32(nxt_msg*,signed int);
 
 // Adds an unsigned 32 bit value to the msg.
-void msg_addU32(msg_t*,unsigned int);
+void msg_addU32(nxt_msg*,unsigned int);
 
-// Converts a message txt into a signed 16 bit value.
-signed short int msg_bytes2S16(char*);
+// return: the message as a signed short.
+short msg_bytes2S16(char*);
 
-// Converts a message txt into an unsigned 16 bit value.
-unsigned short int msg_bytes2U16(char*);
+// return: the message as an unsigned int.
+unsigned short msg_bytes2U16(char*);
 
-// Converts a message txt into a signed 32 bit value.
-signed int msg_bytes2S32(char*);
+// return: the message as a signed int.
+int msg_bytes2S32(char*);
 
-// Converts a message txt into an unsigned 32 bit value.
+// return: the message as an unsigned short.
 unsigned int msg_bytes2U32(char*);
 
 
@@ -80,4 +98,4 @@ message opcodes:
 */
 
 
-#endif /* MSG_H */
+#endif
