@@ -229,4 +229,12 @@ int NXT_reset_motor_position(NXT*,
 // return: 0 on success, non-zero on failure.
 int NXT_stay_alive(NXT*);
 
+// Drive fowards for s seconds at p power
+// If s is negative, drive  foward forever.
+void NXT_driveforward(NXT*,time_t,unsigned char,motor_port,motor_port);
+
+// Drive backwards for s seconds at p power.
+// If s is negative, drive  foward forever.
+void NXT_drivebackward(NXT*,time_t,unsigned char,motor_port,motor_port);
+
 #endif
