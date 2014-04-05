@@ -1,60 +1,72 @@
-// Joe Jevnik
-// 2.11.2013
-// implementation of the msg_t.
+/* msg.c --- Implementation of the message type section of the C_NXT library.
+   Copyright (c) 2014 Joe Jevnik
 
-#include <stdlib.h>
-#include <string.h>
+   This program is free software; you can redistribute it and/or modify it
+   under the terms of the GNU General Public License as published by the Free
+   Software Foundation; either version 2 of the License, or (at your option)
+   any later version.
+
+   This program is distributed in the hope that it will be useful, but WITHOUT
+   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+   FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+   more details.
+
+   You should have received a copy of the GNU General Public License along with
+   this program; if not, write to the Free Software Foundation, Inc., 51
+   Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA. */
 
 #include "msg.h"
 
-typedef unsigned char u_char;
-
-// allocates and initializes a new msg_t.
-msg_t *alloc_msg(char type, char opcode){
-    msg_t *tmp = malloc(sizeof(msg_t));
-    tmp->txt = malloc(64 * sizeof(u_char));
-    tmp->txt[0] = type;
-    tmp->txt[1] = opcode;
-    tmp->len = 2;
-    tmp->cap = 256;
+// allocates and initializes a new nxt_msg.
+nxt_msg *alloc_msg(char type, char opcode){
+    nxt_msg *tmp = malloc(sizeof(nxt_msg));
+    tmp->txt     = malloc(64 * sizeof(u_char));
+    tmp->txt[0]  = type;
+    tmp->txt[1]  = opcode;
+    tmp->len     = 2;
+    tmp->cap     = 256;
     return tmp;
 }
 
-void free_msg(msg_t *msg){
+void free_msg(nxt_msg *msg){
     free(msg->txt);
     free(msg);
 }
 
 // equivelent to { free(msg); msg = alloc(type,opcode); }.
-void msg_reset(msg_t *msg,char type, char opcode){
+void msg_reset(nxt_msg *msg,char type, char opcode){
     free(msg->txt);
-    msg->txt = malloc(64 * sizeof(u_char));
+    msg->txt    = malloc(64 * sizeof(u_char));
     msg->txt[0] = type;
     msg->txt[1] = opcode;
-    msg->len = 2;
-    msg->cap = 256;
+    msg->len    = 2;
+    msg->cap    = 256;
 }
 
 // adds a signed char to the end of msg.
-void msg_addS8(msg_t *msg,signed char a){
+void msg_addS8(nxt_msg *msg,char a){
+    u_char *tmp;
+    int     n;
     msg->len += 1;
     if (msg->len == msg->cap){
-	u_char *tmp = malloc((msg->cap + 256) * sizeof(u_char));
-	for (int n = 0;n < msg->len - 1;n++){
+        tmp = malloc((msg->cap + 256) * sizeof(u_char));
+	for (n = 0;n < msg->len - 1;n++){
 	    tmp[n] = msg->txt[n];
 	}
 	free(msg->txt);
 	msg->txt = tmp;
     }
-    msg->txt[msg->len - 1] =  a;
+    msg->txt[msg->len - 1] = a;
 }
 
 // add an u_char to the msg.
-void msg_addU8(msg_t *msg,u_char a){
+void msg_addU8(nxt_msg *msg,u_char a){
+    u_char *tmp;
+    int     n;
     msg->len += 1;
     if (msg->len == msg->cap){
-	u_char *tmp = malloc((msg->cap + 256) * sizeof(u_char));
-	for (int n = 0;n < msg->len - 1;n++){
+        tmp = malloc((msg->cap + 256) * sizeof(u_char));
+	for (n = 0;n < msg->len - 1;n++){
 	    tmp[n] = msg->txt[n];
 	}
 	free(msg->txt);
@@ -64,11 +76,13 @@ void msg_addU8(msg_t *msg,u_char a){
 }
 
 // add a signed short to the msg.
-void msg_addS16(msg_t *msg,signed short int a){
+void msg_addS16(nxt_msg *msg,signed short int a){
+    u_char *tmp;
+    int     n;
     msg->len += 2;
         if (msg->len >= msg->cap){
-	u_char *tmp = malloc((msg->cap + 256) * sizeof(u_char));
-	for (int n = 0;n < msg->len - 1;n++){
+	tmp = malloc((msg->cap + 256) * sizeof(u_char));
+	for (n = 0;n < msg->len - 1;n++){
 	    tmp[n] = msg->txt[n];
 	}
 	free(msg->txt);
@@ -84,11 +98,13 @@ void msg_addS16(msg_t *msg,signed short int a){
 }
 
 // add an unsinged short the msg.
-void msg_addU16(msg_t *msg,unsigned short int a){
+void msg_addU16(nxt_msg *msg,unsigned short int a){
+    u_char *tmp;
+    int     n;
     msg->len += 2;
     if (msg->len >= msg->cap){
-	u_char *tmp = malloc((msg->cap + 256) * sizeof(u_char));
-	for (int n = 0;n < msg->len - 1;n++){
+	tmp = malloc((msg->cap + 256) * sizeof(u_char));
+	for (n = 0;n < msg->len - 1;n++){
 	    tmp[n] = msg->txt[n];
 	}
 	free(msg->txt);
@@ -105,11 +121,13 @@ void msg_addU16(msg_t *msg,unsigned short int a){
 
 
 // add a signed int to the msg.
-void msg_addS32(msg_t *msg,signed int a){
+void msg_addS32(nxt_msg *msg,signed int a){
+    u_char *tmp;
+    int     n;
     msg->len += 4;
     if (msg->len >= msg->cap){
-	u_char *tmp = malloc((msg->cap + 256) * sizeof(u_char));
-	for (int n = 0;n < msg->len - 1;n++){
+	tmp = malloc((msg->cap + 256) * sizeof(u_char));
+	for (n = 0;n < msg->len - 1;n++){
 	    tmp[n] = msg->txt[n];
 	}
 	free(msg->txt);
@@ -129,11 +147,13 @@ void msg_addS32(msg_t *msg,signed int a){
 }
 
 // add an unsigned int to the msg.
-void msg_addU32(msg_t *msg,unsigned int a){
+void msg_addU32(nxt_msg *msg,unsigned int a){
+    u_char *tmp;
+    int     n;
     msg->len += 4;
     if (msg->len >= msg->cap){
-	u_char *tmp = malloc((msg->cap + 256) * sizeof(u_char));
-	for (int n = 0;n < msg->len - 1;n++){
+	tmp = malloc((msg->cap + 256) * sizeof(u_char));
+	for (n = 0;n < msg->len - 1;n++){
 	    tmp[n] = msg->txt[n];
 	}
 	free(msg->txt);
@@ -152,27 +172,25 @@ void msg_addU32(msg_t *msg,unsigned int a){
 #endif
 }
 
-// converts a message to a signed short int.
-signed short int msg_bytes2S16(char *str){
-    return (signed short int) ((0xff & str[0]) 
-			       | ((0xff & str[1]) << 8));
+// return: the message as a signed short.
+short msg_bytes2S16(char *str){
+    return (short) ((0xff & str[0]) | ((0xff & str[1]) << 8));
 }
 
-// converts a message to an unsigned short int.
-unsigned short int msg_bytes2U16(char *str){;
-    return (unsigned short int) ((0xff & str[0]) 
-				 | ((0xff & str[1]) << 8));
+// return: the message as an unsigned int.
+unsigned short msg_bytes2U16(char *str){;
+    return (unsigned short) ((0xff & str[0]) | ((0xff & str[1]) << 8));
 }
 
-// converts a message to a signed int.
-signed int msg_bytes2S32(char *str){
-    return (signed int) ((0xff & str[0])
-			 | ((0xff & str[1]) << 8)
-			 | ((0xff & str[2]) << 16)
-			 | ((0xff & str[3]) << 24));
+// return: the message as a signed int.
+int msg_bytes2S32(char *str){
+    return (int) ((0xff & str[0])
+                  | ((0xff & str[1]) << 8)
+                  | ((0xff & str[2]) << 16)
+                  | ((0xff & str[3]) << 24));
 }
 
-// converts a message an unsigned int.
+// return: the message as an unsigned int.
 unsigned int msg_bytes2U32(char *str){
     return (unsigned int) ((0xff & str[0])
 			   | ((0xff & str[1]) << 8)

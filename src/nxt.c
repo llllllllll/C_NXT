@@ -1,61 +1,62 @@
-// Joe Jevnik
-// 2.11.2013
-// implementation of the nxt.
+/* nxt.c --- Implementation of the C_NXT library.
+   Copyright (c) 2014 Joe Jevnik
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-#include <unistd.h>
-#include <errno.h>
-#include <sys/socket.h>
-#include <bluetooth/bluetooth.h>
-#include <bluetooth/hci.h>
-#include <bluetooth/hci_lib.h>
-#include <bluetooth/rfcomm.h>
+   This program is free software; you can redistribute it and/or modify it
+   under the terms of the GNU General Public License as published by the Free
+   Software Foundation; either version 2 of the License, or (at your option)
+   any later version.
+
+   This program is distributed in the hope that it will be useful, but WITHOUT
+   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+   FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+   more details.
+
+   You should have received a copy of the GNU General Public License along with
+   this program; if not, write to the Free Software Foundation, Inc., 51
+   Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA. */
 
 #include "nxt.h"
-#include "msg.h"
 
-// Allocates an initializes a NXT.
-NXT *alloc_NXT(){
-    NXT *tmp  = malloc(sizeof(NXT));
-    tmp->dev_id = hci_get_route(NULL);
-    tmp->local_sock = hci_open_dev(tmp->dev_id);
-    if (tmp->dev_id < 0 || tmp->local_sock < 0){
-	free(tmp);
-	return NULL;
+// Initializes a previously allocate NXT structure.
+// return: 0 on success, non-zero on failure.
+int NXT_init(NXT *nxt){
+    if (!nxt){
+        return -1;
     }
-    tmp->remote_sock = socket(AF_BLUETOOTH,SOCK_STREAM,BTPROTO_RFCOMM);
-    return tmp;
+    nxt->dev_id = hci_get_route(NULL);
+    nxt->local_sock = hci_open_dev(nxt->dev_id);
+    if (nxt->dev_id < 0 || nxt->local_sock < 0){
+	return -2;
+    }
+    nxt->remote_sock = socket(AF_BLUETOOTH,SOCK_STREAM,BTPROTO_RFCOMM);
+    return 0;
 }
 
-// Safely frees a NXT*.
-void free_NXT(NXT *nxt){
-    close(nxt->local_sock);
-    free(nxt);
+// Safely releases all resources held by this NXT structure.
+// return: 0 on success, non-zero on failure.
+int NXT_destroy(NXT *nxt){
+    return close(nxt->local_sock);
 }
 
-// Connects a NXT to a given mac address.
-// On success returns 0.
-// On failure returns -1.
+// Connects an NXT to a given mac address.
+// return: 0 on success, non-zero on failure.
 int NXT_connect(NXT *nxt,const char *mac){
     struct sockaddr_rc addr = {0};
     addr.rc_family = AF_BLUETOOTH;
     addr.rc_channel = (uint8_t) 1;
-    str2ba( mac, &addr.rc_bdaddr );
-    return connect(nxt->remote_sock,(struct sockaddr*)&addr,sizeof(addr));
+    str2ba(mac,&addr.rc_bdaddr);
+    return connect(nxt->remote_sock,(struct sockaddr*) &addr,sizeof(addr));
 }
 
-// disconnects the nxt.
-void NXT_disconnect(NXT *nxt){
-    close(nxt->remote_sock);
+// Disconnects the NXT structure from the robot.
+// return: 0 on success, non-zero on failure.
+int NXT_disconnect(NXT *nxt){
+    return close(nxt->remote_sock);
 }
 
 // sends a buffer to the nxt.
-// on sucess, returns 0.
-// on failure returns -1.
-int NXT_send_buffer(NXT *nxt,char *b,unsigned short int len){
+// return: 0 on success, non-zero on failure.
+int NXT_send_buffer(NXT *nxt,char *b,unsigned short len){
     char *b2 = malloc(len * sizeof(char)),l2[2];
     int status;
 #ifdef _NXT_LITTLE_ENDIAN
@@ -80,10 +81,10 @@ int NXT_send_buffer(NXT *nxt,char *b,unsigned short int len){
     return 0;
 }
 
-// Sends a msg_t to the NXT.
+// Sends a nxt_msg to the NXT.
 // On success returns 0.
 // On failure returns -1.
-int NXT_send_msg(NXT *nxt,msg_t *msg){
+int NXT_send_msg(NXT *nxt,nxt_msg *msg){
     char *b = malloc(msg->len * sizeof(char)),l2[2];
     int status;
 #ifdef _NXT_LITTLE_ENDIAN
@@ -109,12 +110,13 @@ int NXT_send_msg(NXT *nxt,msg_t *msg){
 }
 
 // Reads from the nxt and sets the message into b.
+// return:
 // on success returns 0.
 // if the buffer is too small, returns -1.
 // if the read fails, returns -2.
-int NXT_recv_buffer(NXT *nxt,char *b,unsigned short int len){
+int NXT_recv_buffer(NXT *nxt,char *b,unsigned short len){
     char l2[2];
-    unsigned short int msg_size;
+    unsigned short msg_size;
     int bytes_read;
     read(nxt->remote_sock,l2,2);
     msg_size = l2[0] + 256 * l2[1];
@@ -128,9 +130,10 @@ int NXT_recv_buffer(NXT *nxt,char *b,unsigned short int len){
 }
 
 // Plays a tone on the nxt.
-void NXT_play_tone(NXT *nxt,unsigned short int freq,unsigned short int time,
-		   int ans,unsigned char *status){
-    msg_t *msg;
+// return: 0 on success, non-zero on failure.
+int NXT_play_tone(NXT *nxt,unsigned short freq,unsigned short time,
+                  bool ans,unsigned char *status){
+    nxt_msg *msg;
     if(ans){
         msg = alloc_msg(0x0,0x3);
     } else {
@@ -144,28 +147,31 @@ void NXT_play_tone(NXT *nxt,unsigned short int freq,unsigned short int time,
 	NXT_recv_buffer(nxt,buf,3);
 	if(buf[0] != 0x02 || buf[1] != 0x03){
 	    free_msg(msg);
-	    return;
+	    return -1;
 	}
 	*status = buf[2];
     }
     free_msg(msg);
     usleep(time * 1000);
+    return 0;
 }
 
 // Returns the remaining mV of charge on the nxt.
-unsigned short int NXT_battery_level(NXT* nxt){
-    msg_t *msg = alloc_msg(0,0x0b);
+unsigned short NXT_battery_level(NXT *nxt){
+    nxt_msg *msg = alloc_msg(0,0x0b);
     char buf[5];
     NXT_send_msg(nxt,msg);
     NXT_recv_buffer(nxt,buf,5);
     free_msg(msg);
-    return (unsigned short int) (buf[3] + 256 * buf[4]);
+    return (unsigned short) (buf[3] + 256 * buf[4]);
 }
 
 // sets the output state on the nxt.
-void NXT_set_motorstate(NXT *nxt,motorstate_t *st,int ans,
-			unsigned char *status){
-    msg_t *msg;
+// return: 0 on success, non-zero on failure.
+int NXT_set_motorstate(NXT *nxt,motorstate *st,bool ans,
+                       unsigned char *status){
+    nxt_msg *msg;
+    char     buf[3];
     if(ans){
         msg = alloc_msg(0x0,0x4);
     } else {
@@ -181,102 +187,101 @@ void NXT_set_motorstate(NXT *nxt,motorstate_t *st,int ans,
     NXT_send_msg(nxt,msg);
     free_msg(msg);
     if(ans){
-	char buf[3];
 	NXT_recv_buffer(nxt,buf,3);
 	if(buf[0] != 0x02 || buf[1] != 0x04){
-	    return;
+	    return -1;
 	}
 	*status=buf[2];
+        return 0;
     }
 }
 
-// returns the motorstate_t of the nxt on the given port.
-motorstate_t *NXT_get_motorstate(NXT *nxt,motor_port port){
-    msg_t *msg = alloc_msg(0x0,0x6);
-    char buf[25];
-    motorstate_t *st = malloc(sizeof(motorstate_t));
+// returns the motorstate of the nxt on the given port.
+int NXT_get_motorstate(NXT *nxt,motor_port port,motorstate *st){
+    nxt_msg *msg = alloc_msg(0x0,0x6);
+    char     buf[25];
     msg_addU8(msg,port);
     NXT_send_msg(nxt,msg);
     NXT_recv_buffer(nxt,buf,25);
     free_msg(msg);
     if(buf[0]!= 0x02 || buf[1] != 0x06){
-	free(st);
-        return NULL;
+        return -1;
     }
     if(buf[2] != 0){
-	free(st);
-        return NULL;
+        return -2;
     }
-    st->port = buf[3];
-    st->power = buf[4];
-    st->mode = buf[5];
-    st->reg_mode = buf[6];
-    st->turn_ratio = buf[7];
-    st->run_state = buf[8];
-    st->tacho_limit = msg_bytes2U32(&(buf[9]));
-    st->tacho_count = msg_bytes2S32(&(buf[13]));
+    st->port              = buf[3];
+    st->power             = buf[4];
+    st->mode              = buf[5];
+    st->reg_mode          = buf[6];
+    st->turn_ratio        = buf[7];
+    st->run_state         = buf[8];
+    st->tacho_limit       = msg_bytes2U32(&(buf[9]));
+    st->tacho_count       = msg_bytes2S32(&(buf[13]));
     st->block_tacho_count = msg_bytes2S32(&(buf[17]));
-    st->rotation_count = msg_bytes2S32(&(buf[21]));
-    return st;
+    st->rotation_count    = msg_bytes2S32(&(buf[21]));
+    return 0;
 }
 
 // sets the input mode of the nxt.
-void NXT_set_input_mode(NXT *nxt,sensor_port port,sensor_type type,
-			sensor_mode mode,int ans,unsigned char *status){
-    msg_t *msg;
+// return: 0 on success, non-zero on failure.
+int NXT_set_input_mode(NXT *nxt,sensor_port port,sensor_type type,
+                       sensor_mode mode,bool ans,unsigned char *status){
+    nxt_msg *msg;
     if(ans){
-	msg = alloc_msg(0x0,0x5);
+	msg = alloc_msg(0x00,0x05);
     } else {
-	msg = alloc_msg(0x80,0x5);
+	msg = alloc_msg(0x80,0x05);
     }
     msg_addU8(msg,port);
     msg_addU8(msg,type);
     msg_addU8(msg,mode);
     NXT_send_msg(nxt,msg);
-
     if(ans){
 	char buf[3];
 	NXT_recv_buffer(nxt,buf,3);
 	if(buf[0] != 0x02 || buf[1] != 0x05){
 	    free_msg(msg);
-	    return;
+	    return -1;
 	}
 	*status = buf[2];
     }
     free_msg(msg);
+    return 0;
 }
 
-// returns the sensorstate_t of a given port.
-sensorstate_t *NXT_get_sensorstate(NXT *nxt,sensor_port port){
-    msg_t *msg = alloc_msg(0x0,0x7);
-    char buf[16];
-    sensorstate_t *st = malloc(sizeof(sensorstate_t));
+// Retrieves the sensor state off the NXT of the given port, storing the
+// result in r.
+// return: 0 on success, non-zero on failure.
+int NXT_get_sensorstate(NXT *nxt,sensor_port port,sensorstate *st){
+    nxt_msg *msg = alloc_msg(0x00,0x07);
+    char     buf[16];
     msg_addU8(msg,port);
     NXT_send_msg(nxt,msg);
     NXT_recv_buffer(nxt,buf,16);
-    free(msg);
+    free_msg(msg);
     if(buf[0] != 0x02 || buf[1] != 0x07){
-        return NULL;
+        return -1;
     }
     if(buf[2] != 0){
-        return NULL;
+        return -2;
     }
-    st->port = buf[3];
-    st->valid = (buf[4] > 0) ? 1 : 0;
-    st->calibrated = (buf[5] > 0) ? 1 : 0;
-    st->type = (sensor_type) ((int) buf[6]);
-    st->mode = (sensor_mode) ((int) buf[7]);
-    st->raw_value = msg_bytes2U16(&(buf[8]));
+    st->port             = buf[3];
+    st->valid            = (buf[4] > 0) ? 1 : 0;
+    st->calibrated       = (buf[5] > 0) ? 1 : 0;
+    st->type             = (sensor_type) ((int) buf[6]);
+    st->mode             = (sensor_mode) ((int) buf[7]);
+    st->raw_value        = msg_bytes2U16(&(buf[8]));
     st->normalized_value = msg_bytes2U16(&(buf[10]));
-    st->scaled_value = msg_bytes2S16(&(buf[12]));
+    st->scaled_value     = msg_bytes2S16(&(buf[12]));
     st->calibrated_value = msg_bytes2S16(&(buf[14]));
-    return st;
+    return 0;
 }
 
 // resets the motor position of a port.
-void NXT_reset_motor_position(NXT *nxt,motor_port port,
-			      int relative,int ans,unsigned char *status){
-    msg_t *msg;
+int NXT_reset_motor_position(NXT *nxt,motor_port port,bool relative,
+                             bool ans,unsigned char *status){
+    nxt_msg *msg;
     if(ans){
         msg = alloc_msg(0x0,0xa);
     }else{
@@ -294,16 +299,19 @@ void NXT_reset_motor_position(NXT *nxt,motor_port port,
 	NXT_recv_buffer(nxt,buf,3);
 	if(buf[0] != 0x02 || buf[1] != 0x0a){
 	    free_msg(msg);
-	    return;
+	    return -1;
 	}
 	*status = buf[2];
     }
     free_msg(msg);
+    return 0;
 }
 
 // sends a message to stay alive to the nxt.
-void NXT_stay_alive(NXT* nxt){
-    msg_t *msg = alloc_msg(0x80,0x0D);
-    NXT_send_msg(nxt,msg);
+// return: 0 on success, non-zero on failure.
+int NXT_stay_alive(NXT* nxt){
+    nxt_msg *msg = alloc_msg(0x80,0x0D);
+    int      r   = NXT_send_msg(nxt,msg);
     free_msg(msg);
+    return r;
 }
