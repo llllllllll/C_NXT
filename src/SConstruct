@@ -9,13 +9,13 @@ if byteorder == 'big':
 else:
 	endian = '_NXT_LITTLE_ENDIAN'
 
-BuildEnv = Environment(CCFLAGS=['-g','-ggdb'
+BuildEnv = Environment(CCFLAGS=['-Wall'
                                 ,'-D' + endian])
 
 if auto_libs:
 	BuildEnv.ParseConfig('pkg-config --cflags --libs ' + auto_libs)
 
-Default(BuildEnv.Library('C_NXT',
+Default(BuildEnv.Library('c_nxt',
 			 [x for x in glob('*.c')
 			  if not x.startswith('main')],
 			 LIBS=['bluetooth']))

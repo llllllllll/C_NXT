@@ -17,6 +17,24 @@
 
 #include "nxt.h"
 
+// A static array off all NXT's.
+NXT   *opened_nxtv[256];
+size_t opened_nxtc = 0;
+
+// A custom handler for the lego NXT robot.
+// If a segfault is encountered, it will stop all the motors, release all
+// resources, and print an error message, then call abort().
+void NXT_sigsegv(int sig){
+    size_t n;
+    for (n = 0;n < opened_nxtc;n++){
+        if (opened_nxtv[n]){
+            NXT_destroy(opened_nxtv[n]);
+        }
+    }
+    write(STDERR_FILENO,"Oops, invalid memory access!\n",29);
+    abort();
+}
+
 // Initializes a previously allocate NXT structure.
 // return: 0 on success, non-zero on failure.
 int NXT_init(NXT *nxt){
@@ -29,21 +47,29 @@ int NXT_init(NXT *nxt){
 	return -2;
     }
     nxt->remote_sock = socket(AF_BLUETOOTH,SOCK_STREAM,BTPROTO_RFCOMM);
+    if (opened_nxtc >= 255){
+        errno = ENOBUFS;
+        return -1;
+    }
+    nxt->index                 = opened_nxtc;
+    opened_nxtv[opened_nxtc++] = nxt;
     return 0;
 }
 
 // Safely releases all resources held by this NXT structure.
 // return: 0 on success, non-zero on failure.
 int NXT_destroy(NXT *nxt){
-    return close(nxt->local_sock);
+    opened_nxtv[nxt->index] = NULL;
+    return NXT_stopallmotors(nxt)
+        || close(nxt->local_sock);
 }
 
 // Connects an NXT to a given mac address.
 // return: 0 on success, non-zero on failure.
 int NXT_connect(NXT *nxt,const char *mac){
-    struct sockaddr_rc addr = {0};
-    addr.rc_family = AF_BLUETOOTH;
-    addr.rc_channel = (uint8_t) 1;
+    struct sockaddr_rc addr = { 0 };
+    addr.rc_family          = AF_BLUETOOTH;
+    addr.rc_channel         = (uint8_t) 1;
     str2ba(mac,&addr.rc_bdaddr);
     return connect(nxt->remote_sock,(struct sockaddr*) &addr,sizeof(addr));
 }
@@ -127,6 +153,7 @@ int NXT_recv_buffer(NXT *nxt,char *b,unsigned short len){
     if (bytes_read < 0){
 	return -2;
     }
+    return 0;
 }
 
 // Plays a tone on the nxt.
@@ -194,6 +221,7 @@ int NXT_set_motorstate(NXT *nxt,motorstate *st,bool ans,
 	*status=buf[2];
         return 0;
     }
+    return 0;
 }
 
 // returns the motorstate of the nxt on the given port.
@@ -221,6 +249,13 @@ int NXT_get_motorstate(NXT *nxt,motor_port port,motorstate *st){
     st->block_tacho_count = msg_bytes2S32(&(buf[17]));
     st->rotation_count    = msg_bytes2S32(&(buf[21]));
     return 0;
+}
+
+// Initializes all motors by turning them on.
+// return: 0 on success, non-zero on failure.
+int NXT_initmotors(NXT *nxt){
+    motorstate st = { MOTOR_ALL,0,RUN_BRAKE,SYNCHRONIZATION,0,0,0 };
+    return NXT_set_motorstate(nxt,&st,false,NULL);
 }
 
 // sets the input mode of the nxt.
