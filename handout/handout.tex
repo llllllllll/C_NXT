@@ -233,6 +233,46 @@
 
 \newpage
 
+\noindent \textbf{How to write your own program:}
+\begin{enumerate}
+\item Open the file `robot.c' in any text editor (try emacs). \\
+  The extension `.c' is used to denote that this file is c source code. \\
+  We will use the text editor to change the source code.
+\item Refer to the \textbf{Function Appendix} as you are working to see what
+  actions you can make the robot preform.
+\item When you are finished, switch over to the `terminal' window. \\
+  Here is where we will compile and run our programs. \\
+  The terminal will give you a prompt that looks like so:
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{o}{[}joejev@Sheila example\PY{o}{]}{\PYZdl{}}
+  \end{Verbatim}
+  This is your indicator that it is ready for commands.
+\item To compile the program, use the `make' command. \\
+  Be sure to read any errors or warning that the compiler presents you, and
+  ask someone for help interpretting the errors (if there are any).
+  \begin{Verbatim}[commandchars=\\\{\}]
+    Makefile:17: recipe \PY{k}{for }target \PY{l+s+s1}{\PYZsq{}robot.o\PYZsq{}} failed
+    make: *** \PY{o}{[}robot.o\PY{o}{]} Error 1
+  \end{Verbatim}
+  Example error.
+\item After you have fixed all the errors and warnings, use the `./robot'
+  command to start your program. \\
+  Be sure to read the program's output, it will try to inform you if something
+  is going wrong.
+\item Example errors:
+  \begin{Verbatim}[commandchars=\\\{\}]
+    main: nxt\PYZus{}init: Host is down
+  \end{Verbatim}
+  This means that the robot is off, or it cannot find it. \\
+  \begin{Verbatim}[commandchars=\\\{\}]
+    main: nxt\PYZus{}init: No such device
+  \end{Verbatim}
+  This means the bluetooth controller on the computer is down.
+\end{enumerate}
+
+
+\newpage
+
 \noindent \textbf{Function Appendix:}
 \begin{Verbatim}[commandchars=\\\{\}]
   \PY{c+c1}{// Initializes a previously allocated NXT structure.}
