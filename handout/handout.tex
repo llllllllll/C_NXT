@@ -1,0 +1,370 @@
+\documentclass{article}
+
+\usepackage{fullpage}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{fancyvrb}
+\usepackage{color}
+\usepackage[ascii]{inputenc}
+
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+  \let\PY@ul=\relax \let\PY@tc=\relax%
+  \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+  \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+        \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+\setlength\headheight{15pt}
+\renewcommand{\headrulewidth}{0pt}
+
+
+\begin{document}
+
+\thispagestyle{fancy}
+
+\noindent \textbf{Basics of Computer Programs:}
+\begin{enumerate}
+\item The entry point.
+  \begin{enumerate}
+  \item The place where execution begins.
+  \item Most frequently called the `main' function.
+  \item Responsible for the high level organization of the program.
+  \end{enumerate}
+\item Variables
+  \begin{enumerate}
+  \item Something that ``holds'' a value.
+  \item Like `x' (or any variable) in algebra
+  \end{enumerate}
+\item Functions
+  \begin{enumerate}
+  \item A procedure that accepts 0 or more aguments and returns a new value.
+  \item We define functions like so:
+    \begin{Verbatim}[commandchars=\\\{\}]
+      \PY{n}{type} \PY{n+nf}{function}\PY{p}{(}\PY{n}{type} \PY{n}{param1}\PY{p}{,}\PY{n}{type} \PY{n}{param2}\PY{p}{)}\PY{p}{\PYZob{}}
+      \PY{c+c1}{// Function body}
+      \PY{k}{return} \PY{n}{value}\PY{p}{;}
+      \PY{p}{\PYZcb{}}
+    \end{Verbatim}
+  \item We can call functions like so:
+    \begin{Verbatim}[commandchars=\\\{\}]
+      \PY{n}{variable} \PY{o}{=} \PY{n}{function}\PY{p}{(}\PY{n}{arg1}\PY{p}{,}\PY{n}{arg2}\PY{p}{)}\PY{p}{;}
+    \end{Verbatim}
+  \end{enumerate}
+\item Logic (Flow of Control) \\
+  The flow of control is the logic that the program must preform to choose the
+  actions it preforms. \\
+  Programming logic uses boolean values. Boolean value are like switches that
+  are either ON or OFF.
+  \begin{enumerate}
+  \item Boolean operators:
+    \begin{Verbatim}[commandchars=\\\{\}]
+      \PY{n}{a} \PY{o}{=}\PY{o}{=} \PY{n}{b}\PY{p}{;} \PY{c+c1}{// This tests if a is equal to b.}
+      \PY{n}{a} \PY{o}{!}\PY{o}{=} \PY{n}{b}\PY{p}{;} \PY{c+c1}{// This tests if a is not  equal to b. This is the same as !(a == b)}
+      \PY{o}{!}\PY{n}{a}\PY{p}{;}     \PY{c+c1}{// This test for NOT a.}
+      \PY{n}{a} \PY{o}{\PYZam{}}\PY{o}{\PYZam{}} \PY{n}{b}\PY{p}{;} \PY{c+c1}{// This tests if a AND b are true.}
+      \PY{n}{a} \PY{o}{|}\PY{o}{|} \PY{n}{b}\PY{p}{;} \PY{c+c1}{// This test if a OR b are true.}
+    \end{Verbatim}
+  \item The `if' statement: usage:
+    \begin{Verbatim}[commandchars=\\\{\}]
+      \PY{k}{if} \PY{p}{(}\PY{n}{boolean}\PY{p}{)}\PY{p}{\PYZob{}}
+      \PY{c+c1}{// code if boolean is true}
+      \PY{p}{\PYZcb{}}\PY{k}{else}\PY{p}{\PYZob{}}
+      \PY{c+c1}{// code if vboolean is false}
+      \PY{p}{\PYZcb{}}
+    \end{Verbatim}
+  \item The `while' statement: usage:
+    \begin{Verbatim}[commandchars=\\\{\}]
+      \PY{k}{while}\PY{p}{(}\PY{n}{boolean}\PY{p}{)}\PY{p}{\PYZob{}}
+      \PY{c+c1}{// code to execute WHILE boolean is true}
+      \PY{p}{\PYZcb{}}
+    \end{Verbatim}
+  \end{enumerate}
+\end{enumerate}
+
+\newpage
+
+\noindent \textbf{Structure of a Robot Program:}
+
+\begin{enumerate}
+\item Create a local representaion of the robot on the machine:
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{n}{NXT}  \PY{n}{nxt}\PY{p}{;}
+    \PY{n}{NXT} \PY{o}{*}\PY{n}{robot} \PY{o}{=} \PY{o}{\PYZam{}}\PY{n}{nxt}\PY{p}{;}
+  \end{Verbatim}
+\item Initialize the local representation and connect to the robot:
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{k}{if} \PY{p}{(}\PY{n}{NXT\PYZus{}init}\PY{p}{(}\PY{n}{robot}\PY{p}{)} \PY{o}{|}\PY{o}{|} \PY{n}{NXT\PYZus{}connect}\PY{p}{(}\PY{n}{robot}\PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{00:16:53:1A:14:6A}\PY{l+s}{\PYZdq{}}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZob{}}
+    \PY{n}{    perror}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{main: nxt\PYZus{}init}\PY{l+s}{\PYZdq{}}\PY{p}{)}\PY{p}{;}
+    \PY{k}{    return} \PY{n}{EXIT\PYZus{}FAILURE}\PY{p}{;}
+    \PY{p}{\PYZcb{}}
+  \end{Verbatim}
+  This code connects to the robot, and exits if something fails while
+  connecting.
+\item Setup any input devices on the robot:
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{n}{NXT\PYZus{}initbutton}\PY{p}{(}\PY{n}{robot}\PY{p}{,}\PY{n}{SENSOR\PYZus{}2}\PY{p}{)}\PY{p}{;}
+  \end{Verbatim}
+  This code says that on `robot' there is a button sensor plugged into port 2.
+\item Run the commands.
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{n}{NXT\PYZus{}driveforward}\PY{p}{(}\PY{n}{robot}\PY{p}{,}\PY{n}{FOREVER}\PY{p}{,}\PY{l+m+mi}{100}\PY{p}{,}\PY{n}{MOTOR\PYZus{}A}\PY{p}{,}\PY{n}{MOTOR\PYZus{}B}\PY{p}{)}\PY{p}{;}
+  \end{Verbatim}
+  This code says that `robot' should drive forward at 100\% power forever (until
+  told to do something else), where the left motor is MOTOR\_A, and the right
+  motor is MOTOR\_B.
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{k}{while}\PY{p}{(}\PY{o}{!}\PY{n}{NXT\PYZus{}ispressed}\PY{p}{(}\PY{n}{robot}\PY{p}{,}\PY{n}{SENSOR\PYZus{}2}\PY{p}{)}\PY{p}{)}\PY{p}{;}
+  \end{Verbatim}
+  This code says that while the button plugged into port 2 is not being pressed,
+  do nothing. This is like waiting for the button to be pressed.
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{n}{NXT\PYZus{}drivebackward}\PY{p}{(}\PY{n}{robot}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{80}\PY{p}{,}\PY{n}{MOTOR\PYZus{}A}\PY{p}{,}\PY{n}{MOTOR\PYZus{}B}\PY{p}{)}\PY{p}{;}
+  \end{Verbatim}
+  This code says that after the button has been pressed, `robot' should drive
+  backwards at 80\% power for 3 seconds with the same left and right motors as
+  before.
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{n}{NXT\PYZus{}turnleft}\PY{p}{(}\PY{n}{robot}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{100}\PY{p}{,}\PY{n}{MOTOR\PYZus{}A}\PY{p}{,}\PY{n}{MOTOR\PYZus{}B}\PY{p}{)}\PY{p}{;}
+  \end{Verbatim}
+  This code says to turn `robot' left for 3 seconds, again, with the same
+  motors.
+\item Close the connection and destroy the local representation of the robot.
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{n}{NXT\PYZus{}destroy}\PY{p}{(}\PY{n}{robot}\PY{p}{)}\PY{p}{;}
+  \end{Verbatim}
+  This code says to stop all motors on `robot' and close the connection
+  that was opened earlier.
+\item Exit the program.
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{k}{return} \PY{n}{EXIT\PYZus{}SUCCESS}\PY{p}{;}
+  \end{Verbatim}
+  This says to exit the program with an exit code denoting that everything
+  worked as intended.
+\end{enumerate}
+
+
+\newpage
+
+\noindent \textbf{Function Appendix:}
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{c+c1}{// Initializes a previously allocated NXT structure.}
+  \PY{c+c1}{// return: 0 on success, non\PYZhy{}zero on failure.}
+  \PY{k+kt}{int} \PY{n+nf}{NXT\PYZus{}init}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{)}\PY{p}{;}
+
+  \PY{c+c1}{// Safely releases all resources held by this NXT structure.}
+  \PY{c+c1}{// return: 0 on success, non\PYZhy{}zero on failure.}
+  \PY{k+kt}{int} \PY{n+nf}{NXT\PYZus{}destroy}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{)}\PY{p}{;}
+
+  \PY{c+c1}{// Connects an NXT to a given mac address.}
+  \PY{c+c1}{// return: 0 on success, non\PYZhy{}zero on failure.}
+  \PY{k+kt}{int} \PY{n+nf}{NXT\PYZus{}connect}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{,}\PY{k}{const} \PY{k+kt}{char}\PY{o}{*}\PY{p}{)}\PY{p}{;}
+
+  \PY{c+c1}{// Closes the connection of the given NXT.}
+  \PY{c+c1}{// return: 0 on success, non\PYZhy{}zero on failure.}
+  \PY{k+kt}{int} \PY{n+nf}{NXT\PYZus{}disconnect}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{)}\PY{p}{;}
+
+  \PY{c+c1}{// Returns the battery level in mV of the NXT.}
+  \PY{k+kt}{unsigned} \PY{k+kt}{short} \PY{n+nf}{NXT\PYZus{}battery\PYZus{}level}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{)}\PY{p}{;}
+
+  \PY{c+c1}{// Tells the nxt that there is a button plugged in on this port.}
+  \PY{c+c1}{// return: 0 on success, non\PYZhy{}zero on failure.}
+  \PY{k+kt}{int} \PY{n+nf}{NXT\PYZus{}initbutton}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{,}\PY{n}{sensor\PYZus{}port}\PY{p}{)}\PY{p}{;}
+
+  \PY{c+c1}{// Tells the nxt that there is a light sensor plugged in on this port.}
+  \PY{c+c1}{// return: 0 on success, non\PYZhy{}zero on failure.}
+  \PY{k+kt}{int} \PY{n+nf}{NXT\PYZus{}initlight}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{,}\PY{n}{sensor\PYZus{}port}\PY{p}{)}\PY{p}{;}
+
+  \PY{c+c1}{// Queries the button plugged into port p.}
+  \PY{c+c1}{// return: true if the button is being pressed, false otherwise.}
+  \PY{k+kt}{bool} \PY{n+nf}{NXT\PYZus{}ispressed}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{,}\PY{n}{sensor\PYZus{}port}\PY{p}{)}\PY{p}{;}
+
+  \PY{c+c1}{// Queries the value of the light sensor plugged into port p.}
+  \PY{c+c1}{// return: \PYZhy{}1 on failure, the light value otherwise.}
+  \PY{k+kt}{int} \PY{n+nf}{NXT\PYZus{}readlight}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{,}\PY{n}{sensor\PYZus{}port}\PY{p}{)}\PY{p}{;}
+
+  \PY{c+c1}{// Drive fowards for s seconds at p power}
+  \PY{c+c1}{// If s is negative, drive  foward forever.}
+  \PY{k+kt}{void} \PY{n+nf}{NXT\PYZus{}driveforward}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{,}\PY{k+kt}{time\PYZus{}t}\PY{p}{,}\PY{n}{power}\PY{p}{,}\PY{n}{motor\PYZus{}port}\PY{p}{,}\PY{n}{motor\PYZus{}port}\PY{p}{)}\PY{p}{;}
+
+  \PY{c+c1}{// Drive backwards for s seconds at p power.}
+  \PY{c+c1}{// If s is negative, drive  foward forever.}
+  \PY{k+kt}{void} \PY{n+nf}{NXT\PYZus{}drivebackward}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{,}\PY{k+kt}{time\PYZus{}t}\PY{p}{,}\PY{n}{power}\PY{p}{,}\PY{n}{motor\PYZus{}port}\PY{p}{,}\PY{n}{motor\PYZus{}port}\PY{p}{)}\PY{p}{;}
+
+  \PY{c+c1}{// Turns the robot left for s seconds (forever if s \PYZlt{} 0).}
+  \PY{k+kt}{void} \PY{n+nf}{NXT\PYZus{}turnleft}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{,}\PY{k+kt}{time\PYZus{}t}\PY{p}{,}\PY{n}{power}\PY{p}{,}\PY{n}{motor\PYZus{}port}\PY{p}{,}\PY{n}{motor\PYZus{}port}\PY{p}{)}\PY{p}{;}
+
+  \PY{c+c1}{// Turns the robot right for s seconds (forever if s \PYZlt{} 0).}
+  \PY{k+kt}{void} \PY{n+nf}{NXT\PYZus{}turnright}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{,}\PY{k+kt}{time\PYZus{}t}\PY{p}{,}\PY{n}{power}\PY{p}{,}\PY{n}{motor\PYZus{}port}\PY{p}{,}\PY{n}{motor\PYZus{}port}\PY{p}{)}\PY{p}{;}
+
+\end{Verbatim}
+
+\newpage
+
+\begin{Verbatim}[commandchars=\\\{\}]
+
+  \PY{c+c1}{// Set the velocity of a motor.}
+  \PY{c+c1}{// return: 0 on success, non\PYZhy{}zero on failure.}
+  \PY{k+kt}{int} \PY{n+nf}{NXT\PYZus{}setmotor}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{,}\PY{n}{motor\PYZus{}port}\PY{p}{,}\PY{k+kt}{char}\PY{p}{)}\PY{p}{;}
+
+  \PY{c+c1}{// Stop a motor (set velocity to 0).}
+  \PY{c+c1}{// return: 0 on success, non\PYZhy{}zero on failure.}
+  \PY{k+kt}{int} \PY{n+nf}{NXT\PYZus{}stopmotor}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{,}\PY{n}{motor\PYZus{}port}\PY{p}{)}\PY{p}{;}
+
+  \PY{c+c1}{// Stops all motors (sets velocity to 0).}
+  \PY{c+c1}{// return: 0 on success, non\PYZhy{}zero on failure.}
+  \PY{k+kt}{int} \PY{n+nf}{NXT\PYZus{}stopallmotors}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{)}\PY{p}{;}
+
+  \PY{c+c1}{// LOW LEVEL FUNCTIONS:}
+
+  \PY{c+c1}{// Initializes all motors by turning them on.}
+  \PY{c+c1}{// return: 0 on success, non\PYZhy{}zero on failure.}
+  \PY{k+kt}{int} \PY{n+nf}{NXT\PYZus{}initmotors}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{)}\PY{p}{;}
+
+  \PY{c+c1}{// Sends a STAY\PYZus{}ALIVE message to the NXT. Normal commands do not tell the NXT}
+  \PY{c+c1}{// Not to turn off, and thus you should be sure to send one of these every so}
+  \PY{c+c1}{// often.}
+  \PY{c+c1}{// return: 0 on success, non\PYZhy{}zero on failure.}
+  \PY{k+kt}{int} \PY{n+nf}{NXT\PYZus{}stay\PYZus{}alive}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{)}\PY{p}{;}
+
+  \PY{c+c1}{// Sets a motorstate on the NXT. See motorstate for information on}
+  \PY{c+c1}{// constructiong a proper state to send.}
+  \PY{c+c1}{// If ans, status will be set to the response of the NXT}
+  \PY{c+c1}{// Otherwise, status can be NULL.}
+  \PY{c+c1}{// return: 0 on success, non\PYZhy{}zero on failure.}
+  \PY{k+kt}{int} \PY{n+nf}{NXT\PYZus{}set\PYZus{}motorstate}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{,}
+  \PY{n}{motorstate}\PY{o}{*}\PY{p}{,}
+  \PY{k+kt}{bool}\PY{p}{,}
+  \PY{k+kt}{unsigned} \PY{k+kt}{char}\PY{o}{*}\PY{p}{)}\PY{p}{;}
+
+  \PY{c+c1}{// Resets the position of the motor on port (MOTOR\PYZus{}A,MOTOR\PYZus{}B,MOTOR\PYZus{}C,or}
+  \PY{c+c1}{// MOTOR\PYZus{}ALL).}
+  \PY{c+c1}{// If relative, resets it to the last position before motion, else resets it\PYZsq{}s}
+  \PY{c+c1}{// absolute position.}
+  \PY{c+c1}{// If ans, status will be set to the response of the NXT}
+  \PY{c+c1}{// Otherwise, status can be NULL.}
+  \PY{c+c1}{// return: 0 on success, non\PYZhy{}zero on failure.}
+  \PY{k+kt}{int} \PY{n+nf}{NXT\PYZus{}reset\PYZus{}motor\PYZus{}position}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{,}
+  \PY{n}{motor\PYZus{}port}\PY{p}{,}
+  \PY{k+kt}{bool} \PY{n}{relative}\PY{p}{,}
+  \PY{k+kt}{bool} \PY{n}{ans}\PY{p}{,}
+  \PY{k+kt}{unsigned} \PY{k+kt}{char}\PY{o}{*}\PY{p}{)}\PY{p}{;}
+
+\end{Verbatim}
+
+\newpage
+
+\begin{Verbatim}[commandchars=\\\{\}]
+
+  \PY{c+c1}{// Gets the motorstate of a given port (MOTOR\PYZus{}A,MOTOR\PYZus{}B,MOTOR\PYZus{}C).}
+  \PY{c+c1}{// return: 0 on success, non\PYZhy{}zero on failure.}
+  \PY{k+kt}{int} \PY{n+nf}{NXT\PYZus{}get\PYZus{}motorstate}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{,}
+  \PY{n}{motor\PYZus{}port}\PY{p}{,}
+  \PY{n}{motorstate}\PY{o}{*}\PY{p}{)}\PY{p}{;}
+
+  \PY{c+c1}{// Sets the input mode of a given port to the type and mode specified.}
+  \PY{c+c1}{// If ans, status will be set to the response of the NXT}
+  \PY{c+c1}{// Otherwise, status can be NULL.}
+  \PY{c+c1}{// return: 0 on success, non\PYZhy{}zero on failure.}
+  \PY{k+kt}{int} \PY{n+nf}{NXT\PYZus{}set\PYZus{}input\PYZus{}mode}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{,}
+  \PY{n}{sensor\PYZus{}port}\PY{p}{,}
+  \PY{n}{sensor\PYZus{}type}\PY{p}{,}
+  \PY{n}{sensor\PYZus{}mode}\PY{p}{,}
+  \PY{k+kt}{bool}\PY{p}{,}
+  \PY{k+kt}{unsigned} \PY{k+kt}{char}\PY{o}{*}\PY{p}{)}\PY{p}{;}
+
+  \PY{c+c1}{// Returns a pointer to the sensorstate\PYZus{}t of a given sensor port (SENSOR\PYZus{}1,}
+  \PY{c+c1}{// SENSOR\PYZus{}2,SENSOR\PYZus{}3,SENSOR\PYZus{}4).}
+  \PY{c+c1}{// return: 0 on success, non\PYZhy{}zero on failure.}
+  \PY{k+kt}{int} \PY{n+nf}{NXT\PYZus{}get\PYZus{}sensorstate}\PY{p}{(}\PY{n}{NXT}\PY{o}{*}\PY{p}{,}\PY{n}{sensor\PYZus{}port}\PY{p}{,}\PY{n}{sensorstate}\PY{o}{*}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+
+
+\end{document}

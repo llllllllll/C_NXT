@@ -150,7 +150,7 @@ typedef struct{
 // resources, and print an error message, then call abort().
 void NXT_sigsegv(int);
 
-// Initializes a previously allocate NXT structure.
+// Initializes a previously allocated NXT structure.
 // return: 0 on success, non-zero on failure.
 int NXT_init(NXT*);
 

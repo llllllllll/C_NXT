@@ -38,7 +38,7 @@ int main(void){
     while(!NXT_ispressed(robot,SENSOR_2));
 
     // Drive backwards for 3 seconds.
-    NXT_drivebackward(robot,3,100,MOTOR_A,MOTOR_B);
+    NXT_drivebackward(robot,3,80,MOTOR_A,MOTOR_B);
 
     // Turn to the left for 3 seconds.
     NXT_turnleft(robot,3,100,MOTOR_A,MOTOR_B);
