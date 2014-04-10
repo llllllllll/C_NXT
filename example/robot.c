@@ -27,8 +27,13 @@ int main(void){
         return EXIT_FAILURE;
     }
     signal(SIGSEGV,NXT_sigsegv);
+
+    // Tell the robot there is a button on sensor port 2.
     NXT_initbutton(robot,SENSOR_2);
+
+    // Write "Running..." to the screen.
     puts("Running...");
+
     // Control (your code goes here):
 
     // Make the robot drive forward forever.
