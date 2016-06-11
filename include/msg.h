@@ -21,6 +21,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define _NXT_LITTLE_ENDIAN __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#define _NXT_BIG_ENDIAN __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+
 // Shorthand notation.
 typedef unsigned char u_char;
 

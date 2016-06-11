@@ -1,0 +1,4 @@
+*.o
+*.d
+c_nxt.so*
+example

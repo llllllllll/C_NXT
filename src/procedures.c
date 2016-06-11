@@ -35,10 +35,10 @@ int NXT_initlight(NXT *nxt,sensor_port p){
 
 // Queries the button plugged into port p.
 // return: true if the button is being pressed, false otherwise.
-bool NXT_ispressed(NXT *nxt,sensor_port p){
+int NXT_ispressed(NXT *nxt,sensor_port p){
     sensorstate st;
     if (NXT_get_sensorstate(nxt,p,&st)){
-        return false;
+        return -1;
     }
     return st.raw_value != 1023;
 }
@@ -55,21 +55,23 @@ int NXT_readlight(NXT *nxt,sensor_port p){
 
 // Drive fowards for s seconds at p power
 // If s is negative, drive  foward forever.
-void NXT_driveforward(NXT *nxt,time_t s,power p,
+int NXT_driveforward(NXT *nxt,time_t s,power p,
                       motor_port l,motor_port r){
     motorstate lst = { l,truncate_power(p),REGULATION,SYNCHRONIZATION,0,
                        RUNNING,0,0,0,0 };
     motorstate rst = { r,truncate_power(p),REGULATION,SYNCHRONIZATION,0,
                        RUNNING,0,0,0,0 };
-    NXT_set_motorstate(nxt,&lst,false,NULL);
-    NXT_set_motorstate(nxt,&rst,false,NULL);
+    if (NXT_set_motorstate(nxt,&lst,false,NULL) ||
+        NXT_set_motorstate(nxt,&rst,false,NULL)) {
+        return -1;
+    }
     if (s < 0){
         NXT_stay_alive(nxt);
-        return;
+        return 0;
     }
     sleep((unsigned int) s);
-    NXT_stopmotor(nxt,l);
-    NXT_stopmotor(nxt,r);
+    return (NXT_stopmotor(nxt,l) ||
+            NXT_stopmotor(nxt,r));
 }
 
 // Drive backwards for s seconds at p power.
@@ -80,51 +82,57 @@ void NXT_drivebackward(NXT *nxt,time_t s,power p,
                        RUNNING,0,0,0,0 };
     motorstate rst = { r,-truncate_power(p),REGULATION,SYNCHRONIZATION,0,
                        RUNNING,0,0,0,0 };
-    NXT_set_motorstate(nxt,&lst,false,NULL);
-    NXT_set_motorstate(nxt,&rst,false,NULL);
+    if (NXT_set_motorstate(nxt,&lst,false,NULL) ||
+        NXT_set_motorstate(nxt,&rst,false,NULL)) {
+        return -1;
+    }
     if (s < 0){
         NXT_stay_alive(nxt);
-        return;
+        return 0;
     }
     sleep((unsigned int) s);
-    NXT_stopmotor(nxt,l);
-    NXT_stopmotor(nxt,r);
+    return (NXT_stopmotor(nxt,l) ||
+            NXT_stopmotor(nxt,r));
 }
 
 // Turns the robot left for s seconds (forever if s < 0).
-void NXT_turnleft(NXT *nxt,time_t s,power p,
+int NXT_turnleft(NXT *nxt,time_t s,power p,
                   motor_port l,motor_port r){
     motorstate lst = { l,-truncate_power(p),REGULATION,POWER_CONTROL,0,
                        RUNNING,0,0,0,0 };
     motorstate rst = { r,truncate_power(p),REGULATION,POWER_CONTROL,0,
                        RUNNING,0,0,0,0 };
-    NXT_set_motorstate(nxt,&lst,false,NULL);
-    NXT_set_motorstate(nxt,&rst,false,NULL);
+    if (NXT_set_motorstate(nxt,&lst,false,NULL) ||
+        NXT_set_motorstate(nxt,&rst,false,NULL)) {
+        return -1;
+    }
     if (s < 0){
         NXT_stay_alive(nxt);
-        return;
+        return 0;
     }
     sleep((unsigned int) s);
-    NXT_stopmotor(nxt,l);
-    NXT_stopmotor(nxt,r);
+    return (NXT_stopmotor(nxt,l) ||
+            NXT_stopmotor(nxt,r));
 }
 
 // Turns the robot right for s seconds (forever if s < 0).
-void NXT_turnright(NXT *nxt,time_t s,power p,
+int NXT_turnright(NXT *nxt,time_t s,power p,
                   motor_port l,motor_port r){
     motorstate lst = { l,truncate_power(p),REGULATION,POWER_CONTROL,0,
                        RUNNING,0,0,0,0 };
     motorstate rst = { r,-truncate_power(p),REGULATION,POWER_CONTROL,0,
                        RUNNING,0,0,0,0 };
-    NXT_set_motorstate(nxt,&lst,false,NULL);
-    NXT_set_motorstate(nxt,&rst,false,NULL);
+    if (NXT_set_motorstate(nxt,&lst,false,NULL) ||
+        NXT_set_motorstate(nxt,&rst,false,NULL)) {
+        return -1;
+    }
     if (s < 0){
         NXT_stay_alive(nxt);
         return;
     }
     sleep((unsigned int) s);
-    NXT_stopmotor(nxt,l);
-    NXT_stopmotor(nxt,r);
+    return (NXT_stopmotor(nxt,l) ||
+            NXT_stopmotor(nxt,r));
 }
 
 // Set the velocity of a motor.
@@ -132,7 +140,7 @@ void NXT_turnright(NXT *nxt,time_t s,power p,
 int NXT_setmotor(NXT *nxt,motor_port p,char v){
     motorstate st;
     st.port      = p;
-    st.power     = 0;
+    st.power     = v;
     st.mode      = RUN_BRAKE;
     st.run_state = RUNNING;
     st.reg_mode  = POWER_CONTROL;

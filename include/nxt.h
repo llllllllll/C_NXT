@@ -184,12 +184,13 @@ int NXT_recv_buffer(NXT*,char*,unsigned short);
 // return: 0 on success, non-zero on failure.
 int NXT_play_tone(NXT*,
                   unsigned short freq,
-                  unsigned short time, // as ms.
+                  unsigned short time, // as us.
                   bool           ans,
                   unsigned char *status);
 
 // Returns the battery level in mV of the NXT.
-unsigned short NXT_battery_level(NXT*);
+// return: 0 on success, non-zero on failure.
+int NXT_battery_level(NXT*);
 
 // Sets a motorstate on the NXT. See motorstate for information on
 // constructiong a proper state to send.
@@ -255,8 +256,8 @@ int NXT_initbutton(NXT*,sensor_port);
 int NXT_initlight(NXT*,sensor_port);
 
 // Queries the button plugged into port p.
-// return: true if the button is being pressed, false otherwise.
-bool NXT_ispressed(NXT*,sensor_port);
+// return: -1 on failure, 1 if the button is being pressed, 0 otherwise.
+int NXT_ispressed(NXT*,sensor_port);
 
 // Queries the value of the light sensor plugged into port p.
 // return: -1 on failure, the light value otherwise.
@@ -264,17 +265,17 @@ int NXT_readlight(NXT*,sensor_port);
 
 // Drive fowards for s seconds at p power
 // If s is negative, drive  foward forever.
-void NXT_driveforward(NXT*,time_t,power,motor_port,motor_port);
+int NXT_driveforward(NXT*,time_t,power,motor_port,motor_port);
 
 // Drive backwards for s seconds at p power.
 // If s is negative, drive  foward forever.
-void NXT_drivebackward(NXT*,time_t,power,motor_port,motor_port);
+int NXT_drivebackward(NXT*,time_t,power,motor_port,motor_port);
 
 // Turns the robot left for s seconds (forever if s < 0).
-void NXT_turnleft(NXT*,time_t,power,motor_port,motor_port);
+int NXT_turnleft(NXT*,time_t,power,motor_port,motor_port);
 
 // Turns the robot right for s seconds (forever if s < 0).
-void NXT_turnright(NXT*,time_t,power,motor_port,motor_port);
+int NXT_turnright(NXT*,time_t,power,motor_port,motor_port);
 
 // Set the velocity of a motor.
 // return: 0 on success, non-zero on failure.

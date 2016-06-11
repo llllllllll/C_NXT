@@ -46,7 +46,7 @@ void msg_reset(nxt_msg *msg,char type, char opcode){
 // adds a signed char to the end of msg.
 void msg_addS8(nxt_msg *msg,char a){
     u_char *tmp;
-    int     n;
+    size_t  n;
     msg->len += 1;
     if (msg->len == msg->cap){
         tmp = malloc((msg->cap + 256) * sizeof(u_char));
@@ -62,7 +62,7 @@ void msg_addS8(nxt_msg *msg,char a){
 // add an u_char to the msg.
 void msg_addU8(nxt_msg *msg,u_char a){
     u_char *tmp;
-    int     n;
+    size_t  n;
     msg->len += 1;
     if (msg->len == msg->cap){
         tmp = malloc((msg->cap + 256) * sizeof(u_char));
@@ -78,7 +78,7 @@ void msg_addU8(nxt_msg *msg,u_char a){
 // add a signed short to the msg.
 void msg_addS16(nxt_msg *msg,signed short int a){
     u_char *tmp;
-    int     n;
+    size_t  n;
     msg->len += 2;
         if (msg->len >= msg->cap){
 	tmp = malloc((msg->cap + 256) * sizeof(u_char));
@@ -100,7 +100,7 @@ void msg_addS16(nxt_msg *msg,signed short int a){
 // add an unsinged short the msg.
 void msg_addU16(nxt_msg *msg,unsigned short int a){
     u_char *tmp;
-    int     n;
+    size_t  n;
     msg->len += 2;
     if (msg->len >= msg->cap){
 	tmp = malloc((msg->cap + 256) * sizeof(u_char));
@@ -123,7 +123,7 @@ void msg_addU16(nxt_msg *msg,unsigned short int a){
 // add a signed int to the msg.
 void msg_addS32(nxt_msg *msg,signed int a){
     u_char *tmp;
-    int     n;
+    size_t  n;
     msg->len += 4;
     if (msg->len >= msg->cap){
 	tmp = malloc((msg->cap + 256) * sizeof(u_char));
@@ -149,7 +149,7 @@ void msg_addS32(nxt_msg *msg,signed int a){
 // add an unsigned int to the msg.
 void msg_addU32(nxt_msg *msg,unsigned int a){
     u_char *tmp;
-    int     n;
+    size_t  n;
     msg->len += 4;
     if (msg->len >= msg->cap){
 	tmp = malloc((msg->cap + 256) * sizeof(u_char));

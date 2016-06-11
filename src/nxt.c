@@ -24,7 +24,7 @@ size_t opened_nxtc = 0;
 // A custom handler for the lego NXT robot.
 // If a segfault is encountered, it will stop all the motors, release all
 // resources, and print an error message, then call abort().
-void NXT_sigsegv(int sig){
+void NXT_sigsegv(int sig __attribute__((unused))){
     size_t n;
     for (n = 0;n < opened_nxtc;n++){
         if (opened_nxtv[n]){
@@ -184,12 +184,20 @@ int NXT_play_tone(NXT *nxt,unsigned short freq,unsigned short time,
 }
 
 // Returns the remaining mV of charge on the nxt.
-unsigned short NXT_battery_level(NXT *nxt){
+// return: 0 on success, non-zero on failure.
+int NXT_battery_level(NXT *nxt){
     nxt_msg *msg = alloc_msg(0,0x0b);
     char buf[5];
-    NXT_send_msg(nxt,msg);
-    NXT_recv_buffer(nxt,buf,5);
+    int err;
+    if (NXT_send_msg(nxt,msg)) {
+        free_msg(msg);
+        return -1;
+    }
+    err = NXT_recv_buffer(nxt,buf,5);
     free_msg(msg);
+    if (err) {
+        return err;
+    }
     return (unsigned short) (buf[3] + 256 * buf[4]);
 }
 
@@ -199,6 +207,9 @@ int NXT_set_motorstate(NXT *nxt,motorstate *st,bool ans,
                        unsigned char *status){
     nxt_msg *msg;
     char     buf[3];
+    if(st->power > 100 || st->power < -100){
+        return -2;
+    }
     if(ans){
         msg = alloc_msg(0x0,0x4);
     } else {
@@ -254,7 +265,7 @@ int NXT_get_motorstate(NXT *nxt,motor_port port,motorstate *st){
 // Initializes all motors by turning them on.
 // return: 0 on success, non-zero on failure.
 int NXT_initmotors(NXT *nxt){
-    motorstate st = { MOTOR_ALL,0,RUN_BRAKE,SYNCHRONIZATION,0,0,0 };
+    motorstate st = { MOTOR_ALL,0,RUN_BRAKE,SYNCHRONIZATION,0,0,0,0,0,0 };
     return NXT_set_motorstate(nxt,&st,false,NULL);
 }
 
