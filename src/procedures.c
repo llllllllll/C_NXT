@@ -76,7 +76,7 @@ int NXT_driveforward(NXT *nxt,time_t s,power p,
 
 // Drive backwards for s seconds at p power.
 // If s is negative, drive  foward forever.
-void NXT_drivebackward(NXT *nxt,time_t s,power p,
+int NXT_drivebackward(NXT *nxt,time_t s,power p,
                        motor_port l,motor_port r){
     motorstate lst = { l,-truncate_power(p),REGULATION,SYNCHRONIZATION,0,
                        RUNNING,0,0,0,0 };
@@ -128,7 +128,7 @@ int NXT_turnright(NXT *nxt,time_t s,power p,
     }
     if (s < 0){
         NXT_stay_alive(nxt);
-        return;
+        return 0;
     }
     sleep((unsigned int) s);
     return (NXT_stopmotor(nxt,l) ||
